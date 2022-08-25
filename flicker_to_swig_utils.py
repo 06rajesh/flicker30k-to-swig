@@ -136,7 +136,7 @@ class FlickerSentenceSwigFramer:
 
                 frames.append(frame_out)
 
-            sout = {'sentence': s, 'frames': frames}
+            sout = {'sentence': base_sentence, 'frames': frames}
             output.append(sout)
 
         self._save_ouput_to_json(output, img_id)
