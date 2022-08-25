@@ -1,6 +1,7 @@
 import os
 import re
 import json
+from typing import List
 
 from pathlib import Path
 import nltk
@@ -13,7 +14,7 @@ class FlickerSentenceSwigFramer:
     frame_parser: FrameSemanticTransformer
     sentence_dir: Path
     export_dir: Path
-    be_verbs: list[str]
+    be_verbs: List[str]
 
     def __init__(self, sentences_dir:str, export_dir:str):
         self.ps = PorterStemmer()
@@ -31,7 +32,7 @@ class FlickerSentenceSwigFramer:
         words = re.findall(r'\s*\S+\s*', s)
         return sum(map(len, words[:idx])) + len(words[idx]) - len(words[idx].lstrip())
 
-    def get_words_pos_list(self, s: str, words: list[str]):
+    def get_words_pos_list(self, s: str, words: List[str]):
         start = 0
         strlen = len(s)
         positions = []
@@ -74,7 +75,7 @@ class FlickerSentenceSwigFramer:
 
         return verbs_pos
 
-    def detect_frames_with_custom_locs(self, sentence: str, custom_trigger_locs: list[int]) -> DetectFramesResult:
+    def detect_frames_with_custom_locs(self, sentence: str, custom_trigger_locs: List[int]) -> DetectFramesResult:
         # next detect frames for each trigger
         frames = self.frame_parser._classify_frames(sentence, custom_trigger_locs)
 
