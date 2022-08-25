@@ -1,0 +1,377 @@
+{
+  "hitchhiking_238.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        195,
+        282,
+        380,
+        554
+      ]
+    },
+    "height": 683,
+    "width": 512,
+    "verb": "hitchhiking",
+    "frames": [
+      {
+        "place": "n03519981",
+        "agent": "n10287213"
+      },
+      {
+        "place": "n03519981",
+        "agent": "n10287213"
+      },
+      {
+        "place": "n04096066",
+        "agent": "n10287213"
+      }
+    ]
+  },
+  "flapping_1.jpg": {
+    "bb": {
+      "bodypart": [
+        99,
+        92,
+        596,
+        345
+      ],
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        101,
+        130,
+        585,
+        382
+      ]
+    },
+    "height": 512,
+    "width": 654,
+    "verb": "flapping",
+    "frames": [
+      {
+        "bodypart": "n02151625",
+        "place": "n08613733",
+        "agent": "n01503061"
+      },
+      {
+        "bodypart": "n04592962",
+        "place": "n09328904",
+        "agent": "n01503061"
+      },
+      {
+        "bodypart": "n00179916",
+        "place": "n09436708",
+        "agent": "n01503061"
+      }
+    ]
+  },
+  "puckering_158.jpg": {
+    "bb": {
+      "agentpart": [
+        394,
+        172,
+        433,
+        194
+      ],
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        154,
+        24,
+        583,
+        510
+      ]
+    },
+    "height": 512,
+    "width": 767,
+    "verb": "puckering",
+    "frames": [
+      {
+        "agentpart": "n05305806",
+        "place": "n04066270",
+        "agent": "n10287213"
+      },
+      {
+        "agentpart": "n05305806",
+        "place": "n04105893",
+        "agent": "n10287213"
+      },
+      {
+        "agentpart": "n05302499",
+        "place": "n01026897",
+        "agent": "n10287213"
+      }
+    ]
+  },
+  "grieving_75.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        0,
+        0,
+        666,
+        402
+      ]
+    },
+    "height": 512,
+    "width": 667,
+    "verb": "grieving",
+    "frames": [
+      {
+        "place": "n07451463",
+        "agent": "n07970406"
+      },
+      {
+        "place": "n07451463",
+        "agent": "n10335246"
+      },
+      {
+        "place": "n07451463",
+        "agent": "n07942152"
+      }
+    ]
+  },
+  "shopping_2.jpg": {
+    "bb": {
+      "goods": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        173,
+        56,
+        681,
+        509
+      ]
+    },
+    "height": 512,
+    "width": 759,
+    "verb": "shopping",
+    "frames": [
+      {
+        "goods": "n00021265",
+        "place": "n03461385",
+        "agent": "n07985628"
+      },
+      {
+        "goods": "",
+        "place": "n03176763",
+        "agent": "n10787470"
+      },
+      {
+        "goods": "n04345288",
+        "place": "n04202417",
+        "agent": "n07985628"
+      }
+    ]
+  },
+  "saluting_277.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "target": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        885,
+        135,
+        976,
+        470
+      ]
+    },
+    "height": 512,
+    "width": 1024,
+    "verb": "saluting",
+    "frames": [
+      {
+        "place": "n14977188",
+        "target": "n09994943",
+        "agent": "n08397255"
+      },
+      {
+        "place": "n08613593",
+        "target": "n02701566",
+        "agent": "n10622053"
+      },
+      {
+        "place": "n08613733",
+        "target": "n09994943",
+        "agent": "n10622053"
+      }
+    ]
+  },
+  "standing_66.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        154,
+        30,
+        447,
+        552
+      ]
+    },
+    "height": 768,
+    "width": 512,
+    "verb": "standing",
+    "frames": [
+      {
+        "place": "n08082602",
+        "agent": "n10287213"
+      },
+      {
+        "place": "n08588294",
+        "agent": "n10287213"
+      },
+      {
+        "place": "n04105893",
+        "agent": "n10287213"
+      }
+    ]
+  },
+  "swarming_87.jpg": {
+    "bb": {
+      "agenttype": [
+        268,
+        199,
+        616,
+        364
+      ],
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    "height": 512,
+    "width": 701,
+    "verb": "swarming",
+    "frames": [
+      {
+        "agenttype": "n02159955",
+        "place": "n08613733"
+      },
+      {
+        "agenttype": "n01922303",
+        "place": "n04379243"
+      },
+      {
+        "agenttype": "n02219486",
+        "place": "n08266235"
+      }
+    ]
+  },
+  "chasing_332.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "chasee": [
+        200,
+        233,
+        362,
+        321
+      ],
+      "agent": [
+        543,
+        120,
+        920,
+        318
+      ]
+    },
+    "height": 512,
+    "width": 1033,
+    "verb": "chasing",
+    "frames": [
+      {
+        "place": "n08613593",
+        "chasee": "n02324045",
+        "agent": "n02084071"
+      },
+      {
+        "place": "n08613593",
+        "chasee": "n02324045",
+        "agent": "n02084071"
+      },
+      {
+        "place": "n08569998",
+        "chasee": "n02324045",
+        "agent": "n02084071"
+      }
+    ]
+  },
+  "blossoming_94.jpg": {
+    "bb": {
+      "place": [
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "agent": [
+        233,
+        20,
+        395,
+        332
+      ]
+    },
+    "height": 512,
+    "width": 683,
+    "verb": "blossoming",
+    "frames": [
+      {
+        "place": "n09359803",
+        "agent": "n13104059"
+      },
+      {
+        "place": "n08613733",
+        "agent": "n11669921"
+      },
+      {
+        "place": "n08613593",
+        "agent": "n13104059"
+      }
+    ]
+  }
+}
