@@ -22,13 +22,15 @@ def get_id_list_from_file(filepath:str):
             img_id_list.append(line.rstrip())
     return img_id_list
 
-def export_flicker_to_frame_by_id(idlist: list[str], start_from=0, annotation_dir:str='annotations', batch_size=4, target_file:str= ''):
-    flickerToSwigger = FlickerSentenceSwigFramer(
-        annotations_dir=annotation_dir,
-    )
+def export_flicker_to_frame_by_id(idlist: list[str], start_from=0, sentences_dir:str='annotations/Sentences', export_dir='annotations', batch_size=4, target_file:str= ''):
+    export_path = Path(export_dir)
+    export_folder = export_path / 'Frames'
+    logfile = export_path / 'log.txt'
 
-    annot_path = Path(annotation_dir)
-    logfile = annot_path / 'log.txt'
+    flickerToSwigger = FlickerSentenceSwigFramer(
+        sentences_dir=sentences_dir,
+        export_dir=str(export_folder),
+    )
 
     processed_batches = (start_from) // batch_size
 
@@ -71,6 +73,8 @@ if __name__ == '__main__':
     export_flicker_to_frame_by_id(
         img_id_list,
         start_from=988,
-        annotation_dir='annotations',
+        sentences_dir='annotations/Sentences',
+        export_dir='annotations',
+        batch_size=4,
         target_file=filename
     )

@@ -15,14 +15,13 @@ class FlickerSentenceSwigFramer:
     export_dir: Path
     be_verbs: list[str]
 
-    def __init__(self, annotations_dir:str):
+    def __init__(self, sentences_dir:str, export_dir:str):
         self.ps = PorterStemmer()
         self.frame_parser = FrameSemanticTransformer("base")
 
-        root = Path(annotations_dir)
+        self.sentence_dir = Path(sentences_dir)
+        self.export_dir = Path(export_dir)
 
-        self.sentence_dir = root / 'Sentences'
-        self.export_dir = root / 'Frames'
         self.be_verbs = ['am', 'are', 'is', 'was', 'were', 'been', 'being']
 
         if not os.path.exists(self.export_dir):
