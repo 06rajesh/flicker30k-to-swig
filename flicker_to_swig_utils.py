@@ -123,6 +123,7 @@ class FlickerSentenceSwigFramer:
             # custom_locs = [self.get_word_index(base_sentence, i) for i in verb_idx]
 
             result = self.detect_frames_with_custom_locs(base_sentence, verb_idx)
+            frames = []
             for idx, frame in enumerate(result.frames):
                 frame_out = {
                     'frame': frame.name,
@@ -133,6 +134,9 @@ class FlickerSentenceSwigFramer:
                     elements[element.name.lower()] = element.text
                 frame_out['elements'] = elements
 
-                output.append(frame_out)
+                frames.append(frame_out)
+
+            sout = {'sentence': s, 'frames': frames}
+            output.append(sout)
 
         self._save_ouput_to_json(output, img_id)
