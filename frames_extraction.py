@@ -47,6 +47,9 @@ def export_flicker_to_frame_by_id(idlist: list[str], start_from=0, sentences_dir
 
     idx = 0
     for batch in tqdm(batches):
+
+        n_items = len(batch)
+
         # create processes
         processes = [multiprocessing.Process(target=flickerToSwigger.export_sentence_frames(imgid), args=[imgid]) for imgid in batch]
 
@@ -59,7 +62,7 @@ def export_flicker_to_frame_by_id(idlist: list[str], start_from=0, sentences_dir
             process.join()
 
         log['last_processed_batch'] = processed_batches+idx
-        log['last_saved_index'] = start_from + (idx+1)*batch_size - 1
+        log['last_saved_index'] = start_from + idx*batch_size + n_items - 1
         log['last_saved_id'] = batch[-1]
 
         save_log_to_json(logfile, log)

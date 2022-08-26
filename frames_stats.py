@@ -61,19 +61,27 @@ def extract_role_stats(rootpath:Path, exportpath: Path):
 def debug_img(imgid):
     sentence_file = 'annotations/Sentences/{}.txt'.format(imgid)
     sentence = get_sentence_data(sentence_file)
-    print(sentence)
+    print(len(sentence))
 
     frame_file = 'annotations/Frames/{}.json'.format(imgid)
     with open(frame_file) as f:
         frames = json.load(f)
-    print(frames)
 
+    verb_sen = {}
+    for s in frames:
+        for f in s['frames']:
+            if f['verb'] in verb_sen:
+                sens = verb_sen[f['verb']]
+                sens.append(s['sentence'])
+            else:
+                verb_sen[f['verb']] = [s['sentence']]
+    print(verb_sen)
 
 if __name__ == '__main__':
     # frames_root = Path('annotations/Frames')
     # export_to = Path('stats')
     # extract_verb_stats(frames_root, export_to)
     # extract_role_stats(frames_root, export_to)
-    debug_img('688926797')
+    debug_img('8136850076')
 
 
