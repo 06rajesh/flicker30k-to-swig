@@ -6,13 +6,14 @@ from typing import List
 from pathlib import Path
 import nltk
 import spacy
+import pyinflect
 from spacy import Language
-from nltk.stem import PorterStemmer
+from nltk.stem import SnowballStemmer
 from frame_semantic_transformer import FrameSemanticTransformer, DetectFramesResult, FrameResult, FrameElementResult
 from flickr30k_entities_utils import get_sentence_data
 
 class FlickerSentenceSwigFramer:
-    ps: PorterStemmer
+    stemmer: SnowballStemmer
     frame_parser: FrameSemanticTransformer
     sentence_dir: Path
     export_dir: Path
@@ -20,7 +21,7 @@ class FlickerSentenceSwigFramer:
     be_verbs: List[str]
 
     def __init__(self, sentences_dir:str, export_dir:str):
-        self.ps = PorterStemmer()
+        self.stemmer = SnowballStemmer(language='english')
         self.frame_parser = FrameSemanticTransformer("base")
 
         self.sentence_dir = Path(sentences_dir)
@@ -49,14 +50,25 @@ class FlickerSentenceSwigFramer:
                 start = start + wpos + len(w)
         return positions
 
-    def get_swig_frames_from_verb(self, verb:str):
+    def get_vbg_by_stemming(self, verb:str):
         vowels = ['a', 'e', 'i', 'o', 'u']
+
+        root = self.stemmer.stem(verb)
+        if root[-1] in vowels:
+            root = root[:-1]
+
+        framename = root + 'ing'
+        return framename
+
+    def get_swig_frames_from_verb(self, verb:str):
         framename = verb
         if not verb.endswith('ing'):
-            root = self.ps.stem(verb)
-            if root[-1] in vowels:
-                root = root[:-1]
-            framename = root + 'ing'
+            doc_dep = self.spacy_nlp(verb)
+            token = doc_dep[0]
+            vbg = token._.inflect("VBG")
+            if not vbg:
+                vbg = self.get_vbg_by_stemming(verb)
+            framename = vbg
 
         return framename
 

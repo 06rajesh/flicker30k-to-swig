@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # extract_verb_stats(frames_root, export_to)
     # extract_role_stats(frames_root, export_to)
 
-    preprocess_frames('idlists/val.txt', 'annotations/Frames_processed')
+    # preprocess_frames('idlists/val.txt', 'annotations/Frames_processed')
 
     # sentence_file = 'annotations/Sentences/{}.txt'.format('142786312')
     # sentence = get_sentence_data(sentence_file)
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     # for item in sentence:
     #     sentences.append(item['sentence'])
     #
-    # framer = FlickerSentenceSwigFramer('annotations/Sentences', 'annotations/Frames')
+    framer = FlickerSentenceSwigFramer('annotations/Sentences', 'annotations/Frames')
     #
     # for s in sentences:
     #     print(s)
@@ -100,3 +100,5 @@ if __name__ == '__main__':
     #     print("=================================")
 
     # verb_idx, verbs = framer.get_verb_idx('A person is drowning on the verge of a clip', with_frames=True)
+    vbg = framer.get_swig_frames_from_verb('sideway')
+    print(vbg)
