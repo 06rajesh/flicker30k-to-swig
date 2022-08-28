@@ -5,6 +5,8 @@ from typing import List
 
 from pathlib import Path
 import nltk
+import spacy
+from spacy import Language
 from nltk.stem import PorterStemmer
 from frame_semantic_transformer import FrameSemanticTransformer, DetectFramesResult, FrameResult, FrameElementResult
 from flickr30k_entities_utils import get_sentence_data
@@ -14,6 +16,7 @@ class FlickerSentenceSwigFramer:
     frame_parser: FrameSemanticTransformer
     sentence_dir: Path
     export_dir: Path
+    spacy_nlp: Language
     be_verbs: List[str]
 
     def __init__(self, sentences_dir:str, export_dir:str):
@@ -22,6 +25,8 @@ class FlickerSentenceSwigFramer:
 
         self.sentence_dir = Path(sentences_dir)
         self.export_dir = Path(export_dir)
+
+        self.spacy_nlp = spacy.load("en_core_web_sm")
 
         self.be_verbs = ['am', 'are', 'is', 'was', 'were', 'been', 'being']
 
@@ -55,22 +60,28 @@ class FlickerSentenceSwigFramer:
 
         return framename
 
-    def get_verb_idx(self, sentence: str, with_frames:bool=False):
+    def get_nltk_verbs(self, sentence:str):
         text = nltk.word_tokenize(sentence)
         pos_tagged = nltk.pos_tag(text)
 
-        verbs = []
-        frames_list = []
-        for idx, pos_tuple in enumerate(pos_tagged):
-            if pos_tuple[1].startswith('VB') and pos_tuple[0] not in self.be_verbs:
-                verbs.append(pos_tuple[0])
-                if with_frames:
-                    frame = self.get_swig_frames_from_verb(pos_tuple[0])
-                    frames_list.append(frame)
+        nltk_verbs = [pos_tuple[0] for pos_tuple in pos_tagged if pos_tuple[1].startswith('VB') and pos_tuple[0] not in self.be_verbs]
+        return nltk_verbs
 
+    def get_spacy_verbs(self, sentence:str):
+        doc = self.spacy_nlp(sentence)
+        spacy_verbs = [token.text for token in doc if token.pos_ == "VERB"]
+        return spacy_verbs
+
+    def get_verb_idx(self, sentence: str, with_frames:bool=False):
+
+        # spacy_verbs = self.get_spacy_verbs(sentence)
+        # print(spacy_verbs)
+
+        verbs = self.get_nltk_verbs(sentence)
         verbs_pos = self.get_words_pos_list(sentence, verbs)
 
         if with_frames:
+            frames_list = [self.get_swig_frames_from_verb(v) for v in verbs]
             return verbs_pos, frames_list
 
         return verbs_pos
@@ -120,7 +131,6 @@ class FlickerSentenceSwigFramer:
         for s in sentences:
             base_sentence, _ = self.frame_parser._identify_triggers(s['sentence'])
             verb_idx, verbs = self.get_verb_idx(base_sentence, with_frames=True)
-            # custom_locs = [self.get_word_index(base_sentence, i) for i in verb_idx]
 
             result = self.detect_frames_with_custom_locs(base_sentence, verb_idx)
             frames = []
