@@ -89,7 +89,7 @@ class FlickerSentenceSwigFramer:
         # spacy_verbs = self.get_spacy_verbs(sentence)
         # print(spacy_verbs)
 
-        verbs = self.get_nltk_verbs(sentence)
+        verbs = self.get_spacy_verbs(sentence)
         verbs_pos = self.get_words_pos_list(sentence, verbs)
 
         if with_frames:
