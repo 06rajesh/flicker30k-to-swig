@@ -68,16 +68,31 @@ def export_flicker_to_frame_by_id(idlist: list[str], start_from=0, sentences_dir
         save_log_to_json(logfile, log)
         idx += 1
 
+def export_single_frame(imgid:str, sentences_dir:str='annotations/Sentences', export_dir='annotations'):
+    export_path = Path(export_dir)
+    export_folder = export_path / 'Frames'
+
+    flickerToSwigger = FlickerSentenceSwigFramer(
+        sentences_dir=sentences_dir,
+        export_dir=str(export_folder),
+    )
+
+    flickerToSwigger.export_sentence_frames(imgid)
+
+
+
 if __name__ == '__main__':
 
-    filename = 'idlists/val.txt'
-    img_id_list = get_id_list_from_file(filename)
+    # filename = 'idlists/val.txt'
+    # img_id_list = get_id_list_from_file(filename)
+    #
+    # export_flicker_to_frame_by_id(
+    #     img_id_list,
+    #     start_from=988,
+    #     sentences_dir='annotations/Sentences',
+    #     export_dir='annotations',
+    #     batch_size=4,
+    #     target_file=filename
+    # )
 
-    export_flicker_to_frame_by_id(
-        img_id_list,
-        start_from=988,
-        sentences_dir='annotations/Sentences',
-        export_dir='annotations',
-        batch_size=4,
-        target_file=filename
-    )
+    export_single_frame('4477467862', sentences_dir='annotations/Sentences', export_dir='annotations')

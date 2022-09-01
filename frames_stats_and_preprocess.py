@@ -20,13 +20,13 @@ def extract_verb_stats(rootpath:Path, exportpath: Path):
     for file in files:
         filepath = rootpath / file
         with open(filepath) as f:
-            frames = json.load(f)
+            frames_by_verbs = json.load(f)
 
-            for item in frames:
-                if item['verb'] in verbs:
-                    verbs[item['verb']] += 1
+            for verb in frames_by_verbs:
+                if verb in verbs:
+                    verbs[verb] += 1
                 else:
-                    verbs[item['verb']] = 1
+                    verbs[verb]  = 1
 
     verbs = sort_dict_by_val(verbs)
 
@@ -42,7 +42,6 @@ def extract_role_stats(rootpath:Path, exportpath: Path):
         filepath = rootpath / file
         with open(filepath) as f:
             frames = json.load(f)
-
             for item in frames:
                 elems = item['elements']
                 for key in elems:
@@ -78,12 +77,6 @@ def preprocess_frames(targetfile:str, export_dir: str = 'annotations/Frames_proc
 
 
 if __name__ == '__main__':
-    # frames_root = Path('annotations/Frames')
-    # export_to = Path('stats')
-    # extract_verb_stats(frames_root, export_to)
-    # extract_role_stats(frames_root, export_to)
-
-    # preprocess_frames('idlists/val.txt', 'annotations/Frames_processed')
 
     # sentence_file = 'annotations/Sentences/{}.txt'.format('142786312')
     # sentence = get_sentence_data(sentence_file)
@@ -92,13 +85,26 @@ if __name__ == '__main__':
     # for item in sentence:
     #     sentences.append(item['sentence'])
     #
-    framer = FlickerSentenceSwigFramer('annotations/Sentences', 'annotations/Frames')
+    # framer = FlickerSentenceSwigFramer('annotations/Sentences', 'annotations/Frames')
     #
     # for s in sentences:
     #     print(s)
     #     verb_idx, verbs = framer.get_verb_idx(s, with_frames=True)
     #     print("=================================")
 
-    # verb_idx, verbs = framer.get_verb_idx('A person is drowning on the verge of a clip', with_frames=True)
-    vbg = framer.get_swig_frames_from_verb('sideway')
-    print(vbg)
+    # sample = 'a guy sitting in a chair with a mug on the table next to him'
+    # verb_idx, verbs = framer.get_verb_idx(sample, with_frames=True)
+    # frames = framer.detect_frames_with_custom_locs(sample, verb_idx)
+    # print(frames)
+
+    # vbg = framer.get_swig_frames_from_verb('sideway')
+    # print(vbg)
+
+    # preprocess_frames('idlists/val.txt', 'annotations/Frames_processed')
+    # preprocess_frames('idlists/test.txt', 'annotations/Frames_processed')
+    # preprocess_frames('idlists/train.txt', 'annotations/Frames_processed')
+
+    frames_root = Path('annotations/Frames_processed')
+    export_to = Path('stats')
+    extract_verb_stats(frames_root, export_to)
+    # extract_role_stats(frames_root, export_to)

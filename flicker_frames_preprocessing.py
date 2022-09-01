@@ -56,7 +56,12 @@ class FlickerFramesPreprocessor:
 
         frame_file = self.paths.frames / '{}.json'.format(self.imgid)
         with open(frame_file) as f:
-            self.frames = json.load(f)
+            try:
+                self.frames = json.load(f)
+            except json.decoder.JSONDecodeError:
+                print(self.imgid)
+                print(frame_file)
+                exit()
 
     def _save_ouput_to_json(self, output):
         outfile = self.paths.export / '{}.json'.format(self.imgid)

@@ -162,3 +162,4 @@ cython_debug/
 annotations/
 flickr30k-images/
 annotations.zip
+SWiG_jsons/
