@@ -45,7 +45,15 @@ def debug_json_file(filename:str, img_dir:str):
 
     for key in random_keys:
         img_id = key.split('_')[1]
+        verb = key.split('_')[0]
         img_path = img_root / '{}.jpg'.format(img_id)
+
+        frames_path = Path('annotations/Frames_processed')
+        filepath = frames_path / '{}.json'.format(img_id)
+        with open(filepath) as f:
+            verb_frames = json.load(f)
+
+        print(verb_frames[verb])
 
         annotation = all[key]
 
@@ -72,10 +80,18 @@ def debug_json_file(filename:str, img_dir:str):
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    # with open('./flicker_jsons/flickersite_space.json') as f:
+    # with open('./flicker_jsons/flickersitu_space.json') as f:
     #     all = json.load(f)
     #     nouns = all['nouns']
     #     verb_orders = all['verbs']
+    #
+    # place_count = 0
+    #
+    # for v in verb_orders:
+    #     if 'place' in verb_orders[v]['order']:
+    #         place_count += 1
+    #
+    # print(place_count, len(verb_orders))
     #
     # sample_verbs = {}
     # for idx, key in enumerate(verb_orders.keys()):
@@ -105,8 +121,8 @@ if __name__ == '__main__':
 
     """
     dev.json: 3480
-    test.json: 3394
-    train.json: 102048
+    test.json: 3400
+    train.json: 102172
     """
     targetfile_without_ext = ''
 
@@ -115,9 +131,12 @@ if __name__ == '__main__':
             annotation_path='annotations/Annotations',
             frames_path='annotations/Frames_processed',
             idlist_file='idlists/{}.txt'.format(targetfile_without_ext),
+            debug=False
         )
 
         creator.generate_and_save_json(targetfile_without_ext)
+        # all_json = creator.generate_swig_json()
+        # print(all_json)
 
     debug_json_file('flicker_jsons/train.json', 'flickr30k-images/')
 

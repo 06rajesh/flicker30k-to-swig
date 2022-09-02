@@ -3,6 +3,7 @@ from os import listdir
 from typing import List
 import json
 import csv
+import random
 
 from pathlib import Path
 import nltk
@@ -12,6 +13,10 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import framenet as fn
 
 from flickr30k_entities_utils import get_annotations, get_sentence_data
+
+def noun2synset(noun):
+    noun_syn = wn.synset_from_pos_and_offset(noun[0], int(noun[1:])).name() if re.match(r'n[0-9]*', noun) else "'{}'".format(noun)
+    return noun_syn.split('.')[0]
 
 def get_id_list_from_file(filepath:str):
     img_id_list = []
@@ -51,6 +56,10 @@ class FlickerSituJsonGenerator:
         else:
             fe = [key.lower() for key in f.FE.keys()]
         intersect = [value for value in elementslist if value in fe]
+
+        if 'location' not in intersect and 'place' not in intersect:
+            intersect.append('place')
+
         return intersect
 
     def filter_verb_frames(self, frame_counts: dict):
@@ -330,13 +339,22 @@ class FlickerJsonCreator:
     export_path: Path
     id_list: List
     all_verbs: dict
+    debug: bool
 
-    def __init__(self, annotation_path:str, frames_path:str, idlist_file:str, situ_space_file:str='./flicker_jsons/flickersitu_space.json', export_path:str = './flicker_jsons'):
+    def __init__(self, annotation_path:str,
+                 frames_path:str, idlist_file:str,
+                 situ_space_file:str='./flicker_jsons/flickersitu_space.json',
+                 export_path:str = './flicker_jsons', debug:bool = False):
         self.frames_path = Path(frames_path)
         self.annotations_path = Path(annotation_path)
         # self.images_path = Path(images_path)
         self.export_path = Path(export_path)
         self.id_list = get_id_list_from_file(idlist_file)
+        self.debug = debug
+
+        if debug:
+            random_keys = [random.choice(self.id_list) for i in range(5)]
+            self.id_list = random_keys
 
         with open(situ_space_file) as f:
             all = json.load(f)
@@ -404,6 +422,9 @@ class FlickerJsonCreator:
         ideal_items = []
         relavent_captions = []
 
+        nonideal_items = []
+        nonideal_relavent_caps = []
+
         for idx, item in enumerate(role_items):
             ideal_item = True
             for k in item:
@@ -416,11 +437,23 @@ class FlickerJsonCreator:
             if ideal_item:
                 ideal_items.append(item)
                 relavent_captions.append(captions[idx])
+            else:
+                nonideal_items.append(item)
+                nonideal_relavent_caps.append(captions[idx])
+
+        # add the items with empty value from the sample value
+        # and add it the the ideal items
+        for i in range(len(nonideal_items)):
+            item_with_empty_val = nonideal_items[i]
+            for k in item_with_empty_val:
+                if item_with_empty_val[k] == '':
+                    item_with_empty_val[k] = sample_roles[k]
+            ideal_items.append(item_with_empty_val)
+            relavent_captions.append(nonideal_relavent_caps[i])
 
         if len(ideal_items) > 3:
-            ideal_items = ideal_items[0:3]
-            related_captions = relavent_captions[0:3]
-        elif len(ideal_items) < 3:
+            return ideal_items[0:3], relavent_captions[0:3]
+        else:
             for i in range(3 - len(ideal_items)):
                 ideal_items.append(sample_roles)
                 relavent_captions.append(sample_caption)
@@ -453,10 +486,13 @@ class FlickerJsonCreator:
 
         return self.merge_box(boxes)
 
-    def generate_swig_json(self):
+    def generate_swig_json(self, idlist:List = None):
         final_json = {}
 
-        for idx, id in enumerate(self.id_list):
+        if not idlist:
+            idlist = self.id_list
+
+        for idx, id in enumerate(idlist):
             annotation_file = self.annotations_path / '{}.xml'.format(id)
             annotation = get_annotations(annotation_file)
 

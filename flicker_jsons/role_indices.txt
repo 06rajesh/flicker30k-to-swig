@@ -137,6 +137,7 @@ performance
 performer
 phenomenon
 pieces
+place
 place_of_employment
 point_of_contact
 position
