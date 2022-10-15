@@ -42,7 +42,10 @@ def extract_role_stats(rootpath:Path, exportpath: Path):
         filepath = rootpath / file
         with open(filepath) as f:
             frames = json.load(f)
-            for item in frames:
+            print(frames)
+            for k in frames.keys():
+                item = frames[k]
+                print(item)
                 elems = item['elements']
                 for key in elems:
                     if key in roles:
@@ -71,9 +74,28 @@ def preprocess_frames(targetfile:str, export_dir: str = 'annotations/Frames_proc
         imgs_dir='flickr30k-images'
     )
 
-    for id in img_id_list:
-        processor = FlickerFramesPreprocessor(id, paths)
-        processor.process_and_save_frames()
+    # debug single image process, change the id and uncomment
+    ############################################
+    id = '2913154802'
+    processor = FlickerFramesPreprocessor(id, paths, debug=True)
+    processor.process_and_save_frames()
+
+    # count = 0
+    # total = len(img_id_list)
+    # print("completed: {}%\r".format((count/total)*100), end='')
+    # for id in img_id_list:
+    #     processor = FlickerFramesPreprocessor(id, paths, debug=False)
+    #     processor.process_and_save_frames()
+    #
+    #     # if count >= 0:
+    #     #     break
+    #     count += 1
+    #
+    #     if count%100 == 0:
+    #         print("completed: {}%\r".format((count / total) * 100), end='')
+    #
+    # print("completed: {}%".format((count / total) * 100), end='\n')
+    # print("Total {} frames has been processed and saved on {}".format(str(total), export_dir))
 
 
 if __name__ == '__main__':
@@ -102,9 +124,9 @@ if __name__ == '__main__':
 
     # preprocess_frames('idlists/val.txt', 'annotations/Frames_processed')
     # preprocess_frames('idlists/test.txt', 'annotations/Frames_processed')
-    # preprocess_frames('idlists/train.txt', 'annotations/Frames_processed')
+    preprocess_frames('idlists/train.txt', 'annotations/Frames_processed')
 
-    frames_root = Path('annotations/Frames_processed')
-    export_to = Path('stats')
-    extract_verb_stats(frames_root, export_to)
+    # frames_root = Path('annotations/Frames_processed')
+    # export_to = Path('stats')
+    # extract_verb_stats(frames_root, export_to)
     # extract_role_stats(frames_root, export_to)

@@ -5,6 +5,7 @@ import json
 import cv2
 from pathlib import Path
 from flickr30k_entities_utils import get_annotations, get_sentence_data
+import spacy
 
 class FramesPreprocessingPathArguments:
     annotations: Path
@@ -40,6 +41,8 @@ class FlickerFramesPreprocessor:
         self.paths = pathargs
         self.imgid = imgid
         self.debug = debug
+
+        self.nlp = spacy.load("en_core_web_sm")
 
         self.load_img_properties()
 
@@ -232,10 +235,55 @@ class FlickerFramesPreprocessor:
                 break
         return selected_phrase
 
+    def get_root_from_complex_phrase(self, phrase:str):
+        comma_splitted = phrase.split(',')
+
+        phrases = []
+        for splitter in comma_splitted:
+            added = False
+            splitted = splitter.split(' and ')
+            if len(splitted) > 1:
+                added = True
+                phrases.extend(splitted)
+
+            splitted = splitter.split(' or ')
+            if len(splitted) > 1:
+                added = True
+                phrases.extend(splitted)
+
+            splitted = splitter.split(' but ')
+            if len(splitted) > 1:
+                added = True
+                phrases.extend(splitted)
+
+            if not added:
+                phrases.append(splitter.strip())
+
+        for ph in phrases:
+            doc = self.nlp(ph)
+            selected = None
+            for token in doc:
+                if token.dep_ == 'ROOT':
+                    selected = token.text
+                    break
+
+            if selected:
+                return selected
+
+        return None
+
+    def detect_phrase(self, phrase:str, phrases:List):
+        root = self.get_root_from_complex_phrase(phrase)
+        if root:
+            for p in phrases:
+                if root in p['phrase']:
+                    return p
+        return self.merge_phrase_by_box(phrases)
+
     def select_single_phrase(self, phrase:str, phrases:List):
         phrase_list = self.extract_phrases(phrase, phrases)
         if len(phrase_list) > 1:
-            selected = self.merge_phrase_by_box(phrase_list)
+            selected = self.detect_phrase(phrase, phrase_list)
         elif len(phrase_list) > 0:
             selected = phrase_list[0]
         else:
@@ -290,6 +338,11 @@ class FlickerFramesPreprocessor:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    def generalize_keys(self, key:str):
+        if 'location' in key:
+            key = 'location'
+        return key
+
     def get_process_frames(self):
         processed_entries = []
         for s_idx, s in enumerate(self.frames):
@@ -302,15 +355,20 @@ class FlickerFramesPreprocessor:
                     'verb': item['verb'],
                 }
                 elems = item['elements']
+                if len(elems) <= 1:
+                    continue
                 updated = {}
                 for key in elems:
-                    updated[key] = self.select_single_phrase(elems[key], phrases)
+                    updated[self.generalize_keys(key)] = self.select_single_phrase(elems[key], phrases)
                 mod['elements'] = updated
                 if self.debug:
                     print(s['sentence'])
                     print(item['verb'])
                     self.view_frame_on_image(updated)
                 modifiled_frames.append(mod)
+
+            if len(modifiled_frames) == 0:
+                continue
 
             entry = {
                 'sentence': s['sentence'],
@@ -322,5 +380,5 @@ class FlickerFramesPreprocessor:
 
     def process_and_save_frames(self):
         processed = self.get_process_frames()
-        sorted = self.sort_frames_by_verbs(processed)
-        self._save_ouput_to_json(sorted)
+        # sorted = self.sort_frames_by_verbs(processed)
+        # self._save_ouput_to_json(sorted)

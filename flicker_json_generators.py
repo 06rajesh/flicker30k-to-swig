@@ -49,15 +49,25 @@ class FlickerSituJsonGenerator:
 
         self.load_all_verbs_and_frames()
 
-    def filter_frame_elements(self, framename, elementslist, core_only: bool = True):
+    def filter_frame_elements(self, framename, elementsdict, core_only: bool = True):
+
+        # sorted element list by count
+        elementsdict = dict(sorted(elementsdict.items(), key=lambda item: item[1], reverse=True))
+        elementslist = list(elementsdict.keys())
+
         f = fn.frame(framename)
         if core_only:
             fe = [fe.lower() for fe in f.FE.keys() if f.FE[fe].coreType == 'Core']
         else:
             fe = [key.lower() for key in f.FE.keys()]
+
         intersect = [value for value in elementslist if value in fe]
+        # select top unique 6
+        intersect = intersect[:6]
 
         if 'location' not in intersect and 'place' not in intersect:
+            if len(intersect) >= 6:
+                del intersect[-1]
             intersect.append('place')
 
         return intersect
@@ -97,10 +107,23 @@ class FlickerSituJsonGenerator:
                     else:
                         verbs[v][f] += 1
 
-                    if f not in framenet_frames:
-                        framenet_frames[f] = set(keylist)
-                    else:
-                        framenet_frames[f].update(keylist)
+                    # if f not in framenet_frames:
+                    #     framenet_frames[f] = set(keylist)
+                    # else:
+                    #     framenet_frames[f].update(keylist)
+
+                    frame_dict = {}
+                    if f in framenet_frames:
+                        frame_dict = framenet_frames[f]
+
+                    keylist = set(keylist)
+                    for k in keylist:
+                        if k in frame_dict.keys():
+                            frame_dict[k] += 1
+                        else:
+                            frame_dict[k] = 1
+
+                    framenet_frames[f] = frame_dict
 
             idx += 1
 
@@ -110,7 +133,7 @@ class FlickerSituJsonGenerator:
 
         # filter frames FE, keeps only available in framenet definitions
         for f in framenet_frames:
-            self.all_frames[f] = self.filter_frame_elements(f, framenet_frames[f])
+            self.all_frames[f] = self.filter_frame_elements(f, framenet_frames[f], core_only=True)
 
     def get_first_sentence(self, text:str):
         splited = text.split('.')
@@ -227,11 +250,16 @@ class FlickerSituJsonGenerator:
                             'def': self.get_first_sentence(elems.definition),
                         }
 
+            # set maximum number of order to 6
+            if len(order) > 6:
+                order = order[:6]
+                print(order)
+
             frame_def = {
                 'framenet': f.name.lower(),
                 'secondary': secondary_frame,
                 'def': self.get_first_sentence(f.definition),
-                'order': self.all_frames[framenet],
+                'order': order,
                 'roles': roles,
             }
 
@@ -366,6 +394,14 @@ class FlickerJsonCreator:
         if len(List) == 0:
             return ''
         return max(set(List), key=List.count)
+
+    @staticmethod
+    def trim_rolename(role:str):
+        if role[-1].isdigit():
+            role = role[:-1]
+            if role[-1] == '_':
+                role = role[:-1]
+        return role
 
     def sort_elements(self, role_orders:List, element_lists:List):
 
